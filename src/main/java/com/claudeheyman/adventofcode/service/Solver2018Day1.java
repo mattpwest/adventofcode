@@ -1,6 +1,8 @@
 package com.claudeheyman.adventofcode.service;
 
+import com.claudeheyman.adventofcode.service.solver.NumericalSequenceSolver;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,17 +11,17 @@ import java.util.TreeSet;
 
 @Service
 @Slf4j
-public class NumericalSequenceSolverService {
+public class Solver2018Day1 {
 
-	public String solve2018_1(List<Integer> numbers) {
-		int finalFrequency = numbers.parallelStream()
-				.reduce(Integer::sum)
-				.orElse(0);
+	@Autowired
+	private NumericalSequenceSolver numericalSequenceSolver;
 
+	public String solvePartOne(List<Integer> numbers) {
+		int finalFrequency = numericalSequenceSolver.sum(numbers);
 		return Integer.toString(finalFrequency);
 	}
 
-	public String solve2018_2(List<Integer> numbers) {
+	public String solvePartTwo(List<Integer> numbers) {
 		log.warn("Starting with " + numbers.size() + " frequency changes");
 
 		Set<Integer> frequenciesVisited = new TreeSet<>();

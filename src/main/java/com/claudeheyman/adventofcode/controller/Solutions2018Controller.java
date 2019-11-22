@@ -1,6 +1,6 @@
 package com.claudeheyman.adventofcode.controller;
 
-import com.claudeheyman.adventofcode.service.NumericalSequenceSolverService;
+import com.claudeheyman.adventofcode.service.Solver2018Day1;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,20 +15,18 @@ import java.util.stream.Collectors;
 public class Solutions2018Controller {
 
 	@Autowired
-	private NumericalSequenceSolverService numberSequenceSolver;
+	private Solver2018Day1 solver;
 
-	@PostMapping("/1")
+	@PostMapping(value = { "/1/{part}", "/1" })
 	public ResponseEntity<String> solve1(
 			@RequestBody String csvList,
-			@RequestParam(defaultValue = "true") boolean part2) {
+			@PathVariable(required = false) String part) {
 
 		List<Integer> values = splitCsv(csvList);
 
-		if (part2) {
-			return ResponseEntity.ok(numberSequenceSolver.solve2018_2(values));
-		} else {
-			return ResponseEntity.ok(numberSequenceSolver.solve2018_1(values));
-		}
+		String solution = "2".equals(part) ? solver.solvePartTwo(values) : solver.solvePartOne(values);
+
+		return ResponseEntity.ok(solution);
 	}
 
 	private List<Integer> splitCsv(String csvList) {
