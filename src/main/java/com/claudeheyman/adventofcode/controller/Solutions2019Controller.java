@@ -1,20 +1,22 @@
 package com.claudeheyman.adventofcode.controller;
 
 import com.claudeheyman.adventofcode.service.Solver2019Day1;
+import com.claudeheyman.adventofcode.service.Solver2019Day2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequestMapping("/solutions/2019")
 @RestController
-public class Solutions2019Controller {
+public class Solutions2019Controller extends AbstractSolutionsController {
 
 	@Autowired
-	private Solver2019Day1 solver;
+	private Solver2019Day1 solver1;
+
+	@Autowired
+	private Solver2019Day2 solver2;
 
 	@PostMapping(value = { "/1/{part}", "/1" })
 	public ResponseEntity<String> solve1(
@@ -23,17 +25,20 @@ public class Solutions2019Controller {
 
 		List<Integer> values = splitCsv(csvList);
 
-		String solution = "2".equals(part) ? solver.solvePartTwo(values) : solver.solvePartOne(values);
+		String solution = "2".equals(part) ? solver1.solvePartTwo(values) : solver1.solvePartOne(values);
 
 		return ResponseEntity.ok(solution);
 	}
 
-	private List<Integer> splitCsv(String csvList) {
-		String[] values = csvList.split("[,\n]");
+	@PostMapping(value = { "/2/{part}", "/2" })
+	public ResponseEntity<String> solve2(
+			@RequestBody String csvList,
+			@PathVariable(required = false) String part) {
 
-		return Arrays.asList(values).parallelStream()
-				.map(s -> s.replace("+", ""))
-				.map(s -> Integer.parseInt(s.trim()))
-				.collect(Collectors.toList());
+		List<Integer> values = splitCsv(csvList);
+
+		String solution = "2".equals(part) ? solver2.solvePartTwo(values) : solver2.solvePartOne(values);
+
+		return ResponseEntity.ok(solution);
 	}
 }

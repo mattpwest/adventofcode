@@ -5,14 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @RequestMapping("/solutions/2018")
 @RestController
-public class Solutions2018Controller {
+public class Solutions2018Controller extends AbstractSolutionsController {
 
 	@Autowired
 	private Solver2018Day1 solver;
@@ -27,14 +25,5 @@ public class Solutions2018Controller {
 		String solution = "2".equals(part) ? solver.solvePartTwo(values) : solver.solvePartOne(values);
 
 		return ResponseEntity.ok(solution);
-	}
-
-	private List<Integer> splitCsv(String csvList) {
-		String[] values = csvList.split("[,\n]");
-
-		return Arrays.asList(values).parallelStream()
-				.map(s -> s.replace("+", ""))
-				.map(s -> Integer.parseInt(s.trim()))
-				.collect(Collectors.toList());
 	}
 }
