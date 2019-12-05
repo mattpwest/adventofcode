@@ -17,7 +17,7 @@ public class Solver2019Day2 {
 		int noun = 0;
 		int verb = 0;
 
-		int limit = numbers.stream().max(Integer::compareTo).orElse(100);
+		int limit = numbers.stream().max(Integer::compareTo).orElse(numbers.size());
 		String expectedResult = "19690720";
 
 		while (noun <= limit) {

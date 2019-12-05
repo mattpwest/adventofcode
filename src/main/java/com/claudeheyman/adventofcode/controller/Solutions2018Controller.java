@@ -20,7 +20,7 @@ public class Solutions2018Controller extends AbstractSolutionsController {
 			@RequestBody String csvList,
 			@PathVariable(required = false) String part) {
 
-		List<Integer> values = splitCsv(csvList);
+		List<Integer> values = splitCsvNumbers(csvList);
 
 		String solution = "2".equals(part) ? solver.solvePartTwo(values) : solver.solvePartOne(values);
 
