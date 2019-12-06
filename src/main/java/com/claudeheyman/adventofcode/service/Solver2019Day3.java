@@ -1,17 +1,14 @@
 package com.claudeheyman.adventofcode.service;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Service
 @Slf4j
@@ -31,8 +28,9 @@ public class Solver2019Day3 {
 			log.info(matrix.createVisualRepresentation());
 		}
 
-		int minDistance = matrix.getMultipleVisitCells().stream()
-				.mapToInt(xy -> Math.abs(xy.getKey()) + Math.abs(xy.getValue()))
+		Cell checkDistanceFrom = new Cell(0,0);
+		int minDistance = matrix.getMultipleVisits().stream()
+				.mapToInt(cell -> cell.calculateManhattanDistance(checkDistanceFrom))
 				.min()
 				.orElse(-1);
 
@@ -56,79 +54,89 @@ public class Solver2019Day3 {
 		}
 	}
 
+	@Data
+	private static class Cell {
+		public final int column;
+		public final int row;
+
+		public Cell move(Direction direction) {
+			switch (direction) {
+				case NORTH: return new Cell(column, row + 1);
+				case EAST: return new Cell(column + 1, row);
+				case SOUTH: return new Cell(column, row - 1);
+				case WEST: return new Cell(column - 1, row);
+			}
+			throw new UnsupportedOperationException("Cannot move for Direction " + direction);
+		}
+
+		int calculateManhattanDistance(Cell other) {
+			return Math.abs(column - other.column) + Math.abs(row - other.row);
+		}
+	}
+
 	@NoArgsConstructor
 	private static class WiringMatrix {
-		private final Map<Integer, List<Integer>> visitedColumnsByRow = new TreeMap<>();
-		private final Map<Integer, Integer> multipleVisits = new TreeMap<>();
 		@Getter
-		private int lastColumn = 0;
+		private final Set<Cell> visited = new HashSet<>();
 		@Getter
-		private int lastRow = 0;
+		private final List<Cell> multipleVisits = new ArrayList<>();
+		@Getter
+		private Cell lastCell = new Cell(0,0);
+
+		private final Set<Cell> currentPath = new HashSet<>();
 
 		public void resetStarting() {
-			this.lastColumn = 0;
-			this.lastRow = 0;
+			this.lastCell = new Cell(0,0);
 		}
 
 		public void markPath(Path path) {
-			int startingColumn = lastColumn;
-			int startingRow = lastRow;
-			int length = path.length;
+			List<Cell> visits = createPathVisits(lastCell, path);
 
-			switch (path.direction) {
-				case NORTH: IntStream.rangeClosed(startingRow+1, startingRow+length).forEach(newR -> markVisit(startingColumn, newR)); break;
-				case EAST: IntStream.rangeClosed(startingColumn+1, startingColumn+length).forEach(newC -> markVisit(newC, startingRow)); break;
-				case SOUTH: IntStream.rangeClosed(startingRow-length, startingRow-1).forEach(newR -> markVisit(startingColumn, newR)); break;
-				case WEST: IntStream.rangeClosed(startingColumn-length, startingColumn-1).forEach(newC -> markVisit(newC, startingRow)); break;
-			}
+			//Juggling via currentPath is needed because multiple visits
+			//of a path on itself should not be counted
+			currentPath.addAll(visits);
+			multipleVisits.addAll(currentPath.stream()
+					.filter(visited::contains)
+					.collect(Collectors.toList()));
+			visited.addAll(currentPath);
+			currentPath.clear();
+
+			lastCell = visits.get(visits.size()-1);
 		}
 
-		private void markVisit(int column, int row) {
-			if (!visitedColumnsByRow.containsKey(row)) {
-				visitedColumnsByRow.put(row, new ArrayList<>());
+		private List<Cell> createPathVisits(Cell startingCell, Path path) {
+			List<Cell> toVisit = new ArrayList<>(path.length);
+			Cell cell = startingCell;
+			for (int i = 0; i < path.length; i++) {
+				cell = cell.move(path.direction);
+				toVisit.add(cell);
 			}
-
-			List<Integer> alreadyVisited = visitedColumnsByRow.get(row);
-			if (alreadyVisited.contains(column)) {
-				multipleVisits.put(column, row);
-			} else {
-				alreadyVisited.add(column);
-			}
-
-			lastColumn = column;
-			lastRow = row;
-		}
-
-		public List<Map.Entry<Integer, Integer>> getMultipleVisitCells() {
-			return new ArrayList<>(multipleVisits.entrySet());
+			return toVisit;
 		}
 
 		public String createVisualRepresentation() {
 			StringBuilder visual = new StringBuilder();
 
-			int maxColumn = visitedColumnsByRow.values().stream().flatMapToInt(integers -> integers.stream().mapToInt(Integer::intValue)).max().orElse(1);
-			int maxRow = visitedColumnsByRow.keySet().stream().mapToInt(Integer::intValue).max().orElse(1);
+			IntSummaryStatistics columnStats = visited.stream()
+					.mapToInt(Cell::getColumn)
+					.summaryStatistics();
+			IntSummaryStatistics rowStats = visited.stream()
+					.mapToInt(Cell::getRow)
+					.summaryStatistics();
 
-			visual.append("--------------------------------------------------------------------------\n");
-			for (int y = maxRow-1; y >= 0; y--) {
-				List<Integer> visited = visitedColumnsByRow.get(y);
-				boolean multivisit = visited != null && visited.size() > 1;
+			for (int y = rowStats.getMax()+2; y >= rowStats.getMin()-2; y--) {
+				for (int x = columnStats.getMin()-2; x <= rowStats.getMax()+2; x++) {
+					boolean visitOnce = visited.contains(new Cell(x, y));
+					boolean visitMultiple = multipleVisits.contains(new Cell(x, y));
 
-				if (visited == null) {
-					visual.append(".".repeat(maxColumn-1));
-					visual.append("\n");
-				} else {
-					for (int x = 0; x <= maxColumn; x++) {
-						if (visited.contains(x)) {
-							visual.append(multivisit ? "~" : "+");
-						} else {
-							visual.append(".");
-						}
+					if (!visitOnce) {
+						visual.append(".");
+					} else {
+						visual.append(visitMultiple ? "+" : "~");
 					}
-					visual.append("\n");
 				}
+				visual.append("\n");
 			}
-			visual.append("--------------------------------------------------------------------------\n");
 			return visual.toString();
 		}
 	}
@@ -146,7 +154,7 @@ public class Solver2019Day3 {
 		public static Direction forCommand(String command) {
 			for (Direction d : values())
 				if (command.startsWith(d.key)) return d;
-			return null;
+			throw new NullPointerException("No direction corresponding to " + command);
 		}
 	}
 }
