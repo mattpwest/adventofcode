@@ -3,7 +3,7 @@ package com.claudeheyman.adventofcode.controller;
 import com.claudeheyman.adventofcode.service.InputService;
 import com.claudeheyman.adventofcode.service.SolutionService;
 import com.claudeheyman.adventofcode.service.input.PuzzleInput;
-import com.claudeheyman.adventofcode.service.solution.DaySolution;
+import com.claudeheyman.adventofcode.service.solution.Solution;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,37 +26,38 @@ public class SolutionsController {
 		return inputService.getPuzzleInput(year, day, body, queryParam);
 	}
 
-	@PostMapping(value = { "/{year}/{day}/{part}", "/{year}/{day}" })
+	@PostMapping(value = { "/{year}/{day}" })
 	public ResponseEntity<String> solvePost(
 			@RequestBody(required = false) String body,
 			@PathVariable int year,
 			@PathVariable int day,
-			@PathVariable(required = false) String part) {
+			@RequestParam(defaultValue = "1") int part
+	) {
 
 		return solve(year, day, part, body, null);
 	}
 
-	@GetMapping(value = { "/{year}/{day}/{part}", "/{year}/{day}" })
+	@GetMapping(value = { "/{year}/{day}" })
 	public ResponseEntity<String> solveGet(
 			@RequestParam(name = "input", required = false) String inputQueryParam,
 			@PathVariable int year,
 			@PathVariable int day,
-			@PathVariable(required = false) String part
-			) {
+			@RequestParam(defaultValue = "1") int part
+	) {
 
 		return solve(year, day, part, null, inputQueryParam);
 	}
 
-	private ResponseEntity<String> solve(int year, int day, String part, String body, String queryParam) {
-
-		int partNo = part == null ? 1 : Integer.parseInt(part);
-
+	private ResponseEntity<String> solve(int year, int day, int part, String body, String queryParam) {
 		try {
 			PuzzleInput input = getInput(year, day, body, queryParam);
-			DaySolution solution = solutionService.getSolution(year, day);
+			Solution solution = solutionService.getSolution(year, day, part);
 
-			return ResponseEntity.ok(solution.solve(partNo, input));
+			if (solution == null) {
+				return ResponseEntity.notFound().build();
+			}
 
+			return ResponseEntity.ok(solution.solve(input));
 		} catch (IOException e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("I/O error reading file input");

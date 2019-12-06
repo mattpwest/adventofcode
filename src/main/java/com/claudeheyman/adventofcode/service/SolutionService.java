@@ -1,23 +1,37 @@
 package com.claudeheyman.adventofcode.service;
 
-import com.claudeheyman.adventofcode.service.solution.DaySolution;
-import com.claudeheyman.adventofcode.service.solution.NotYetDoneSolution;
-import com.claudeheyman.adventofcode.solved.Solved2019;
+import com.claudeheyman.adventofcode.service.solution.Solution;
+import com.claudeheyman.adventofcode.service.solution.AbstractSolution;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Service
 public class SolutionService {
-	private final static DaySolution NOT_COMPLETED = new NotYetDoneSolution();
+
+	private final List<Solution> solutions;
+	private Map<String, Solution> lookup;
 
 	@Autowired
-	private Solved2019 solutions2019;
+	public SolutionService(List<Solution> solutions) {
+		this.solutions = solutions;
 
-	public DaySolution getSolution(int year, int day) {
-		switch (year) {
-			case 2019 : return solutions2019.getSolution(day);
+		buildLookupTable();
+	}
+
+	public Solution getSolution(int year, int day, int part) {
+		return lookup.get(AbstractSolution.buildId(year, day, part));
+	}
+
+	private void buildLookupTable() {
+		lookup = new HashMap<>();
+
+		for (var solution : solutions) {
+			var id = solution.getId();
+			lookup.put(id, solution);
 		}
-
-		return NOT_COMPLETED;
 	}
 }
