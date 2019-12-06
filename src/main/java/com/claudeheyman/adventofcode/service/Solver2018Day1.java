@@ -22,7 +22,7 @@ public class Solver2018Day1 {
 	}
 
 	public String solvePartTwo(List<Integer> numbers) {
-		log.warn("Starting with " + numbers.size() + " frequency changes");
+		log.info("Starting with " + numbers.size() + " frequency changes");
 
 		Set<Integer> frequenciesVisited = new TreeSet<>();
 
@@ -30,12 +30,9 @@ public class Solver2018Day1 {
 		int currentFrequency = 0;
 
 		while (iterationCount < 10_000) {
-			log.error("<--------------------------------------------ITERATION "+iterationCount+"---------------------------------------------------------------->");
-
 			for (int frequency : numbers) {
 				currentFrequency += frequency;
 				boolean alreadyVisited = !frequenciesVisited.add(currentFrequency);
-				log.warn("> " +currentFrequency+ " + " +frequency+ (alreadyVisited?" --------------- found":""));
 				if (alreadyVisited) {
 					return Integer.toString(currentFrequency);
 				}
