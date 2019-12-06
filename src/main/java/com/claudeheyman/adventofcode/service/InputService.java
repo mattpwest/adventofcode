@@ -13,25 +13,25 @@ import java.nio.charset.StandardCharsets;
 @Service
 public class InputService {
 
-	@Autowired
-	private ResourceLoader fileLoader;
+    @Autowired
+    private ResourceLoader fileLoader;
 
-	public PuzzleInput getPuzzleInput(int year, int day, String requestBody, String requestParam) throws IOException {
-		if (StringUtils.hasText(requestParam)) {
-			return new PuzzleInput(requestParam);
-		}
+    public PuzzleInput getPuzzleInput(int year, int day, int part, String requestBody, String requestParam) throws IOException {
+        if (StringUtils.hasText(requestParam)) {
+            return new PuzzleInput(requestParam);
+        }
 
-		if (StringUtils.hasText(requestBody)) {
-			return new PuzzleInput(requestBody);
-		}
+        if (StringUtils.hasText(requestBody)) {
+            return new PuzzleInput(requestBody);
+        }
 
-		return new PuzzleInput(getFileContents(year, day));
-	}
+        return new PuzzleInput(getFileContents(year, day, part));
+    }
 
-	private String getFileContents(int year, int day) throws IOException {
-		Resource inputFile = fileLoader.getResource("classpath:/input/" + year +"/"+ day + ".txt");
+    private String getFileContents(int year, int day, int part) throws IOException {
+        Resource inputFile = fileLoader.getResource("classpath:/" + year + "." + day + "." + part + ".input");
 
-		byte[] bytes = inputFile.getInputStream().readAllBytes();// Files.readAllBytes(Paths.get("/input/" + year + "/" + day));
-		return new String(bytes, StandardCharsets.UTF_8);
-	}
+        byte[] bytes = inputFile.getInputStream().readAllBytes();// Files.readAllBytes(Paths.get("/input/" + year + "/" + day));
+        return new String(bytes, StandardCharsets.UTF_8);
+    }
 }

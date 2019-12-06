@@ -22,8 +22,8 @@ public class SolutionsController {
 	@Autowired
 	private SolutionService solutionService;
 
-	protected PuzzleInput getInput(int year, int day, String body, String queryParam) throws IOException {
-		return inputService.getPuzzleInput(year, day, body, queryParam);
+	protected PuzzleInput getInput(int year, int day, int part, String body, String queryParam) throws IOException {
+		return inputService.getPuzzleInput(year, day, part, body, queryParam);
 	}
 
 	@PostMapping(value = { "/{year}/{day}" })
@@ -50,7 +50,7 @@ public class SolutionsController {
 
 	private ResponseEntity<String> solve(int year, int day, int part, String body, String queryParam) {
 		try {
-			PuzzleInput input = getInput(year, day, body, queryParam);
+			PuzzleInput input = getInput(year, day, part, body, queryParam);
 			Solution solution = solutionService.getSolution(year, day, part);
 
 			if (solution == null) {
