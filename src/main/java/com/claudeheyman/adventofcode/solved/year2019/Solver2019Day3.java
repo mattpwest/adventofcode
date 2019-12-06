@@ -1,17 +1,17 @@
-package com.claudeheyman.adventofcode.service;
+package com.claudeheyman.adventofcode.solved.year2019;
 
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Service
 @Slf4j
+@Component
 public class Solver2019Day3 {
 
 

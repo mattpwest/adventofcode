@@ -1,20 +1,30 @@
-package com.claudeheyman.adventofcode.service;
+package com.claudeheyman.adventofcode.solved.year2018;
 
+import com.claudeheyman.adventofcode.service.input.PuzzleInput;
+import com.claudeheyman.adventofcode.service.solution.DaySolution;
 import com.claudeheyman.adventofcode.service.solver.NumericalSequenceSolver;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-@Service
-@Slf4j
-public class Solver2018Day1 {
+@Component
+public class Solver2018Day1 implements DaySolution {
 
 	@Autowired
 	private NumericalSequenceSolver numericalSequenceSolver;
+
+	@Override
+	public String solve(int part, PuzzleInput input) {
+		List<Integer> numbers = input.retrieveNumbers();
+		if (part == 1) {
+			return solvePartOne(numbers);
+		} else {
+			return solvePartTwo(numbers);
+		}
+	}
 
 	public String solvePartOne(List<Integer> numbers) {
 		int finalFrequency = numericalSequenceSolver.sum(numbers);
@@ -22,8 +32,6 @@ public class Solver2018Day1 {
 	}
 
 	public String solvePartTwo(List<Integer> numbers) {
-		log.info("Starting with " + numbers.size() + " frequency changes");
-
 		Set<Integer> frequenciesVisited = new TreeSet<>();
 
 		int iterationCount = 1;
@@ -43,4 +51,6 @@ public class Solver2018Day1 {
 
 		return "not-found";
 	}
+
 }
+

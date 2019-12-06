@@ -1,7 +1,9 @@
-package com.claudeheyman.adventofcode.service;
+package com.claudeheyman.adventofcode.solved.year2019;
 
+import com.claudeheyman.adventofcode.service.input.PuzzleInput;
+import com.claudeheyman.adventofcode.service.solution.DaySolution;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
@@ -9,9 +11,19 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-@Service
 @Slf4j
-public class Solver2019Day2 {
+@Component
+public class Solver2019Day2 implements DaySolution {
+
+	@Override
+	public String solve(int part, PuzzleInput input) {
+		List<Integer> numbers = input.retrieveNumbers();
+		if (part == 1) {
+			return solvePartOne(numbers);
+		} else {
+			return solvePartTwo(numbers);
+		}
+	}
 
 	public String solvePartTwo(List<Integer> numbers) {
 		int noun = 0;

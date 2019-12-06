@@ -1,17 +1,19 @@
-package com.claudeheyman.adventofcode.service;
+package com.claudeheyman.adventofcode.solved.year2019;
 
+import com.claudeheyman.adventofcode.service.input.PuzzleInput;
+import com.claudeheyman.adventofcode.service.solution.DaySolution;
 import com.claudeheyman.adventofcode.service.solver.NumericalSequenceSolver;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
 @Slf4j
-public class Solver2019Day1 {
+@Component
+public class Solver2019Day1 implements DaySolution {
 
 	@Autowired
 	private NumericalSequenceSolver numericalSequenceSolver;
@@ -40,5 +42,15 @@ public class Solver2019Day1 {
 				.map(mass -> ((int) Math.floor(mass / 3D)) - 2)
 				.filter(integer -> integer > 0)
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public String solve(int part, PuzzleInput input) {
+		List<Integer> numbers = input.retrieveNumbers();
+		if (part == 1) {
+			return solvePartOne(numbers);
+		} else {
+			return solvePartTwo(numbers);
+		}
 	}
 }
