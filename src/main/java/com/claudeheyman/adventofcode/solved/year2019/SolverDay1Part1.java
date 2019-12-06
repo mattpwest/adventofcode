@@ -26,6 +26,14 @@ public class SolverDay1Part1 extends AbstractSolution {
 
 	@Override
 	public String solve(PuzzleInput input) {
-		return "solution-not-implemented";
+		var total = 0;
+		for (var weight : input.retrieveNumbers()) {
+			total += calculateMass(weight);
+		}
+		return String.format("%d", total);
+	}
+
+	protected int calculateMass(Integer weight) {
+		return (int) Math.floor(weight / 3.0) - 2;
 	}
 }
