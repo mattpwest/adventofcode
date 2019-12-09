@@ -52,7 +52,7 @@ public class SolverDay3Part1 extends AbstractSolution {
 		return "" + intersections.peek().getManhattanDistanceFromOrigin();
 	}
 
-	private List<Line2> extractLines(List<String> wires) {
+	protected List<Line2> extractLines(List<String> wires) {
 		var start = new Point2(0, 0);
 		List<Line2> lines = new ArrayList<>();
 		for (String move : wires) {

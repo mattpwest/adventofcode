@@ -51,4 +51,13 @@ public class Line2 {
     private boolean isBetween(int x, int x1, int x2) {
         return (x >= x1 && x <= x2) || (x >= x2 && x <= x1);
     }
+
+    /**
+     * Assumes straight horizontal or vertical lines (no diagonals).
+     *
+     * @return Length of the line in grid coordinate spaces.
+     */
+    public int length() {
+        return Math.abs(start.getX() - end.getX()) + Math.abs(start.getY() - end.getY());
+    }
 }
