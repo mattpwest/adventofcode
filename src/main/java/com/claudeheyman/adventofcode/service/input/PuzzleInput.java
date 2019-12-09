@@ -20,7 +20,7 @@ public class PuzzleInput {
 				.collect(Collectors.toList());
 	}
 
-	protected List<String> retrieveLines() {
+	public List<String> retrieveLines() {
 		String[] values = raw.split("[,\n]");
 
 		return Arrays.asList(values).parallelStream()
@@ -28,7 +28,7 @@ public class PuzzleInput {
 				.collect(Collectors.toList());
 	}
 
-	protected List<List<String>> retrieveSplitLines() {
+	public List<List<String>> retrieveSplitLines() {
 		String[] values = raw.split("[\n]");
 
 		return Arrays.asList(values).parallelStream()
