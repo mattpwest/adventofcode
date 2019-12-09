@@ -3,10 +3,12 @@ package com.claudeheyman.adventofcode.domain.euclidean;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@ToString
 public class Line2 {
     private Point2 start;
     private Point2 end;
@@ -21,15 +23,25 @@ public class Line2 {
             return null;
         } else if (line1dy == 0 && line2dy == 0) {
             return null;
-        }
-
-        if (line1dx == 0 && isBetween(this.start.getX(), line.start.getX(), line.end.getX())) {
+        } else if (line1dx == 0
+                && isBetween(this.start.getX(), line.start.getX(), line.end.getX())
+                && isBetween(line.start.getY(), this.start.getY(), this.end.getY())
+        ) {
             return new Point2(this.start.getX(), line.start.getY());
-        } else if (line2dx == 0 && isBetween(line.getStart().getX(), this.start.getX(), this.end.getX())) {
+        } else if (line2dx == 0
+                && isBetween(line.start.getX(), this.start.getX(), this.end.getX())
+                && isBetween(this.start.getY(), line.start.getY(), line.end.getY())
+        ) {
             return new Point2(line.start.getX(), this.start.getY());
-        } else if (line1dy == 0 && isBetween(this.start.getY(), line.start.getY(), line.end.getY())) {
-            return new Point2(line.start.getX(), this.start.getY());
-        } else if (line2dy == 0 && isBetween(line.start.getY(), this.start.getY(), this.end.getY())) {
+        } else if (line1dy == 0
+                && isBetween(this.start.getY(), line.start.getY(), line.end.getY())
+                && isBetween(line.start.getX(), this.start.getX(), this.end.getX())
+        ) {
+            return new Point2(this.start.getX(), line.start.getY());
+        } else if (line2dy == 0
+                && isBetween(line.start.getY(), this.start.getY(), this.end.getY())
+                && isBetween(this.start.getX(), line.start.getX(), line.end.getX())
+        ) {
             return new Point2(this.start.getX(), line.start.getY());
         }
 

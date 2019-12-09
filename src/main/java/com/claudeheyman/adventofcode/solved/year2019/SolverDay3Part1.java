@@ -22,12 +22,12 @@ public class SolverDay3Part1 extends AbstractSolution {
 
 	@Override
 	public int getDay() {
-		return 2;
+		return 3;
 	}
 
 	@Override
 	public int getPart() {
-		return 2;
+		return 1;
 	}
 
 	@Override
@@ -46,6 +46,8 @@ public class SolverDay3Part1 extends AbstractSolution {
 				}
 			}
 		}
+
+		log.debug(intersections.peek().toString());
 
 		return "" + intersections.peek().getManhattanDistanceFromOrigin();
 	}
