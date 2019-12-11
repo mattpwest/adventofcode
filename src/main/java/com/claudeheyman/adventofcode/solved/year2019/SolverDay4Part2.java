@@ -1,26 +1,15 @@
 package com.claudeheyman.adventofcode.solved.year2019;
 
 import com.claudeheyman.adventofcode.service.input.PuzzleInput;
-import com.claudeheyman.adventofcode.service.solution.AbstractSolution;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class SolverDay4Part1 extends AbstractSolution {
-	@Override
-	public int getYear() {
-		return 2019;
-	}
-
-	@Override
-	public int getDay() {
-		return 4;
-	}
-
+public class SolverDay4Part2 extends SolverDay4Part1 {
 	@Override
 	public int getPart() {
-		return 1;
+		return 2;
 	}
 
 	@Override
@@ -31,7 +20,7 @@ public class SolverDay4Part1 extends AbstractSolution {
 
 		var count = 0;
 		for (var i = start; i <= end; i++) {
-			if (hasDecreasing(i) || !hasTwoAdjacent(i)) continue;
+			if (hasDecreasing(i) || !hasTwoAdjacent(i) || !hasExactlyTwoAdjacent(i)) continue;
 
 			count++;
 		}
@@ -39,31 +28,22 @@ public class SolverDay4Part1 extends AbstractSolution {
 		return "" + count;
 	}
 
-	protected boolean hasDecreasing(Integer i) {
-		var num = i.toString();
-		char last = '0';
-		for (var digit : num.toCharArray()) {
-			if (Integer.parseInt(digit + "") < Integer.parseInt(last + "")) {
-				return true;
-			}
-
-			last = digit;
-		}
-
-		return false;
-	}
-
-	protected boolean hasTwoAdjacent(Integer i) {
+	private boolean hasExactlyTwoAdjacent(Integer i) {
 		var num = i.toString();
 		char last = ' ';
+		var count = 1;
 		for (var digit : num.toCharArray()) {
 			if (digit == last) {
+				count++;
+			} else if (count == 2) {
 				return true;
+			} else {
+				count = 1;
 			}
 
 			last = digit;
 		}
 
-		return false;
+		return count == 2;
 	}
 }

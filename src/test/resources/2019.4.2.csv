@@ -1,0 +1,12 @@
+input,valid
+111111,false
+223450,false
+123789,false
+112233,true
+123444,false
+111122,true
+444455,true
+445566,true
+557777,true
+557778,true
+122345,true
